@@ -1,0 +1,59 @@
+<h1>recvneo - Send Receiver for AlphaSmart Neo</h1>
+
+<p>by Amar Kurani</p>
+
+<ul>
+<li><a href="https://github.com/akurani">https://github.com/akurani</a></li>
+<li><a href="https://twitter.com/AmarKurani">https://twitter.com/AmarKurani</a></li>
+</ul>
+
+<h2>Introduction</h2>
+
+<p>recvneo is a simple script which receives text transmitted from an AlphaSmart
+Neo via the SEND button and saves it to a UTF-8 text file.</p>
+
+<p>The SEND button works by transmitting the text from the AlphaSmart to the
+computer via STDIN. I.e, the AlphaSmart "types" out the file's text to the
+computer.</p>
+
+<p>Normally, you'll use the SEND button with a text editor or word processor. This
+script is a fire-and-forget alternative.</p>
+
+<p>Learn more about the AlphaSmart Neo:</p>
+
+<p><a href="https://en.wikipedia.org/wiki/AlphaSmart">https://en.wikipedia.org/wiki/AlphaSmart</a></p>
+
+<p>It was designed for the classroom, but others and myself and found use as a
+very focused writing tool. It's the hardware equivalent of those distraction-free
+text editors like FocusWriter.</p>
+
+<h2>Installation</h2>
+
+<p>recvneo requires Python 2.7 and only the standard libraries. Copy the script
+to somewhere in your PATH and set the executable bit (i.e., chomod +x recvneo).</p>
+
+<h2>Usage</h2>
+
+<ol>
+<li>Connect your AlphaSmart to your computer with a USB cable.</li>
+<li>Run this script.</li>
+<li>In your AlphaSmart, go to your text file and then press SEND.</li>
+<li>Wait until the text is fully transmitted and the script terminates.</li>
+</ol>
+
+<p>Run "recvneo --help" to learn about the command-line options.</p>
+
+<h2>Licensed under GPL v3:</h2>
+
+<p>This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.</p>
+
+<p>You should have received a copy of the GNU General Public License
+along with this program.  If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.</p>
