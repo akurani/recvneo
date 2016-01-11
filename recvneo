@@ -190,7 +190,7 @@ class NeoReceiver(object):
                 if neo_char != '\n' and not raw_text:
                     outfile.write('\n'.encode("utf-8"))
                     num_neo_char += 1
-                    print
+                    print("")
                     self.logger.info("Appended newline to file.")
 
             finally:
@@ -260,7 +260,7 @@ def main():
             neo.logger.error("%s" % str(e))
 
     finally:
-        print
+        print("")
         return ret_val
 
 
