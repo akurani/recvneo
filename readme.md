@@ -27,8 +27,14 @@ equivalent of those distraction-free text editors like FocusWriter.
 
 ## Installation
 
-recvneo requires Python 2.7 and only the standard libraries. Copy the script
-to somewhere in your PATH and set the executable bit (i.e., chmod +x recvneo).
+Copy the script to somewhere in your PATH and set the executable bit:
+
+    chmod +x recvneo
+
+### Python 2 and 3
+
+recvneo runs either Python 2.7.11+ or Python 3.5.1+ and only the standard
+libraries.
 
 ## Usage
 

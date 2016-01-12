@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 
 """
 # recvneo - Send Receiver for AlphaSmart Neo
@@ -30,8 +30,14 @@ equivalent of those distraction-free text editors like FocusWriter.
 
 ## Installation
 
-recvneo requires Python 2.7 and only the standard libraries. Copy the script
-to somewhere in your PATH and set the executable bit (i.e., chmod +x recvneo).
+Copy the script to somewhere in your PATH and set the executable bit:
+
+    chmod +x recvneo
+
+### Python 2 and 3
+
+recvneo runs either Python 2.7.11+ or Python 3.5.1+ and only the standard
+libraries.
 
 ## Usage
 
@@ -77,7 +83,6 @@ DEFAULT_TIMEOUT = 3  # in seconds
 
 EXIT_KEY = '\x1b'
 EXIT_KEY_TEXT = "[esc]"
-
 WORD_TERMINATING_CHARACTERS = string.whitespace + ".?!:;\""
 
 
@@ -133,7 +138,7 @@ class NeoReceiver(object):
                         number = int(matches.group("number"))
                         if number > max_number:
                             max_number = number
-        return "%s-%04d%s" % (basename, max_number+1, extension)
+        return "%s-%04d%s" % (basename, max_number + 1, extension)
 
     def have_neo_data(self):
         return select.select([sys.stdin], [], [], 0) == ([sys.stdin], [], [])
@@ -173,7 +178,7 @@ class NeoReceiver(object):
                             start_transmission_time = time.time()
                             self.logger.info("Receiving text from the Neo. See the Neo's screen for transmission progress....")
 
-                        outfile.write(neo_char.encode("utf-8"))
+                        outfile.write(neo_char)
 
                         if echo:
                             sys.stdout.write(neo_char)
@@ -188,7 +193,7 @@ class NeoReceiver(object):
                     num_neo_word += 1  # capture the last word
 
                 if neo_char != '\n' and not raw_text:
-                    outfile.write('\n'.encode("utf-8"))
+                    outfile.write('\n')
                     num_neo_char += 1
                     print("")
                     self.logger.info("Appended newline to file.")
@@ -197,15 +202,15 @@ class NeoReceiver(object):
                 termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
 
             self.logger.info("Finished receiving text from the Neo:\n\tFile: %s\n\tCharacters: %d\n\tWords (actual): %d\n\tWords (6 characters): %d\n\tTransmission time: %s" %
-                             (filename, num_neo_char, num_neo_word, int(num_neo_char/6), str(datetime.timedelta(seconds=(time.time() - start_transmission_time - timeout)))))
+                             (filename, num_neo_char, num_neo_word, num_neo_char / 6, str(datetime.timedelta(seconds=(time.time() - start_transmission_time - timeout)))))
 
     def validate_text_file(self, filename):
         if not os.path.exists(filename):
             raise NeoReceiverException("%s does not exist." % filename)
-
         try:
-            with codecs.open(filename, encoding='utf-8', errors='strict') as _:
-                pass
+            with codecs.open(filename, encoding='utf-8', errors='strict') as neo_file:
+                for n in neo_file:
+                    pass
         except UnicodeDecodeError as e:
             raise NeoReceiverException("%s is NOT a valid UTF-8 file/\n" % filename)
         except Exception as e:
@@ -254,10 +259,8 @@ def main():
         ret_val = e.error_code
 
     except Exception as e:
-        if e.message is not None and e.message != "" and e.message != str(e):
-            neo.logger.error("%s: %s" % (str(e), e.message))
-        else:
-            neo.logger.error("%s" % str(e))
+        neo.logger.error("%s" % str(e))
+        ret_val = 1
 
     finally:
         print("")
