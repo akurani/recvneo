@@ -3,7 +3,7 @@
 by Amar Kurani
 
 * <https://github.com/akurani>
-* <https://twitter.com/AmarKurani>
+* <http://amarkurani.com>
 
 ## Introduction
 
@@ -33,8 +33,7 @@ Copy the script to somewhere in your PATH and set the executable bit:
 
 ### Python 2 and 3
 
-recvneo runs either Python 2.7.11+ or Python 3.5.1+ and only the standard
-libraries.
+recvneo runs with Python 2.7.11+ or Python 3.5.1+ and the standard libraries.
 
 ## Usage
 
