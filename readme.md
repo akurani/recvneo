@@ -1,4 +1,4 @@
-# recvneo - Send Receiver for AlphaSmart Neo
+# recvneo - Receiver for AlphaSmart Neo
 
 by Amar Kurani
 
@@ -8,13 +8,12 @@ by Amar Kurani
 ## Introduction
 
 recvneo is a script which receives text transmitted from an AlphaSmart
-Neo's SEND button and saves it to a UTF-8 text file.
+Neo via the SEND button and saves it to a UTF-8 text file.
 
-The SEND button works by transmitting the text from the AlphaSmart to the
-computer through the USB cable to STDIN. I.e, the AlphaSmart "types" out the
-file's text to the computer.
+The SEND button transmits text from the AlphaSmart to STDIN. I.e, the AlphaSmart 
+"types" out the file's text to the computer.
 
-Normally, you'll use the SEND button with a text editor or word processor. This
+Normally, you'd use the SEND button with a text editor or word processor. This
 script is a fire-and-forget alternative.
 
 Learn more about the AlphaSmart Neo:
