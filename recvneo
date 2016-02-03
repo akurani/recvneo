@@ -183,8 +183,9 @@ class NeoReceiver(object):
 
 def main():
     ret_val = 1
-    neo = NeoReceiver()
     try:
+        neo = NeoReceiver()
+
         parser = argparse.ArgumentParser(description="Saves text received via an AlphaSmart Neo's 'send' function into a UTF-8 text file. Run this script, and then hit the 'send' button on the Neo.")
         parser.add_argument("filename", action="store", nargs="?", default=neo.default_filename(), help="Optional name of the UTF-8 text file which will store the Neo text. Default = a generic name with timestamp (e.g., %s)." % neo.default_filename())
         parser.add_argument("-e", "--echo", action="store_true", help="Echos the Neo text to the console as it's received.")
