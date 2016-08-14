@@ -95,7 +95,7 @@ NOTE: untested on other OSs.
 
 ## Licensed under GPL v3
 
-Copyright 2016 by Amar P. Kurani.
+Copyright &copy; 2016 by Amar P. Kurani.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
