@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 # recvneo - Send Receiver for AlphaSmart Neo
@@ -47,9 +47,9 @@ import tty
 
 DEFAULT_TIMEOUT = 3  # in seconds
 
-EXIT_KEY = '\x1b'
+EXIT_KEY = "\x1b"
 EXIT_KEY_TEXT = "[esc]"
-WORD_TERMINATING_CHARACTERS = string.whitespace + ".?!:;\""
+WORD_TERMINATING_CHARACTERS = string.whitespace + '.?!:;"'
 
 
 class NeoReceiverException(Exception):
@@ -75,7 +75,7 @@ class NeoReceiver(object):
         logger = logging.getLogger("recvneo")
         logger.setLevel(logging.INFO)
         streamer = logging.StreamHandler(stream=sys.stdout)
-        formatter = logging.Formatter('<%(name)s> %(message)s')
+        formatter = logging.Formatter("<%(name)s> %(message)s")
         streamer.setFormatter(formatter)
         logger.addHandler(streamer)
         return logger
@@ -109,18 +109,22 @@ class NeoReceiver(object):
     def have_neo_data(self):
         return select.select([sys.stdin], [], [], 0) == ([sys.stdin], [], [])
 
-    def receive_neo_data(self, filename, echo=True, mode='w', raw_text=False, timeout=DEFAULT_TIMEOUT):
+    def receive_neo_data(self, filename, echo=True, mode="w", raw_text=False, timeout=DEFAULT_TIMEOUT):
         self.logger.info("Press the 'send' button on the Neo to transmit the text into: %s" % filename)
-        self.logger.info("Press the %s key on the *computer* to exit *before* initiating the 'send' operation." % EXIT_KEY_TEXT)
-        self.logger.info("Press the [esc] key on the *Neo* and wait for time-out to exit *after* initiating the 'send' operation.")
+        self.logger.info(
+            "Press the %s key on the *computer* to exit *before* initiating the 'send' operation." % EXIT_KEY_TEXT
+        )
+        self.logger.info(
+            "Press the [esc] key on the *Neo* and wait for time-out to exit *after* initiating the 'send' operation."
+        )
         with codecs.open(filename, mode, "utf-8") as outfile:
             num_neo_char = 0
             num_neo_word = 0
             old_settings = termios.tcgetattr(sys.stdin)
             tty.setcbreak(sys.stdin.fileno())
             try:
-                last_neo_char = ''
-                neo_char = ''
+                last_neo_char = ""
+                neo_char = ""
                 first_input = False
                 start_timeout_time = time.time()
                 start_transmission_time = 0
@@ -133,16 +137,22 @@ class NeoReceiver(object):
                         # Only exit early if EXIT_KEY is pressed on the computer before receiving Neo text.
                         # Otherwise, the Neo text will pollute the bash shell.
                         if not first_input and neo_char == EXIT_KEY:
-                            raise NeoReceiverEarlyExit("Exiting. Warning: %s has already been opened and potentially modified." % filename)
+                            raise NeoReceiverEarlyExit(
+                                "Exiting. Warning: %s has already been opened and potentially modified." % filename
+                            )
 
                         num_neo_char += 1
-                        if (last_neo_char not in WORD_TERMINATING_CHARACTERS) and (neo_char in WORD_TERMINATING_CHARACTERS):
+                        if (last_neo_char not in WORD_TERMINATING_CHARACTERS) and (
+                            neo_char in WORD_TERMINATING_CHARACTERS
+                        ):
                             num_neo_word += 1
 
                         if not first_input:
                             first_input = True
                             start_transmission_time = time.time()
-                            self.logger.info("Receiving text from the Neo. See the Neo's screen for transmission progress....")
+                            self.logger.info(
+                                "Receiving text from the Neo. See the Neo's screen for transmission progress...."
+                            )
 
                         outfile.write(neo_char)
 
@@ -158,8 +168,8 @@ class NeoReceiver(object):
                 if neo_char not in WORD_TERMINATING_CHARACTERS:
                     num_neo_word += 1  # capture the last word
 
-                if neo_char != '\n' and not raw_text:
-                    outfile.write('\n')
+                if neo_char != "\n" and not raw_text:
+                    outfile.write("\n")
                     num_neo_char += 1
                     print("")
                     self.logger.info("Appended newline to file.")
@@ -167,17 +177,25 @@ class NeoReceiver(object):
             finally:
                 termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
 
-            self.logger.info("Finished receiving text from the Neo:\n\tFile: %s\n\tCharacters: %d\n\tWords (actual): %d\n\tWords (6 characters): %d\n\tTransmission time: %s" %
-                             (filename, num_neo_char, num_neo_word, num_neo_char / 6, str(datetime.timedelta(seconds=(time.time() - start_transmission_time - timeout)))))
+            self.logger.info(
+                "Finished receiving text from the Neo:\n\tFile: %s\n\tCharacters: %d\n\tWords (actual): %d\n\tWords (6 characters): %d\n\tTransmission time: %s"
+                % (
+                    filename,
+                    num_neo_char,
+                    num_neo_word,
+                    num_neo_char / 6,
+                    str(datetime.timedelta(seconds=(time.time() - start_transmission_time - timeout))),
+                )
+            )
 
     def validate_text_file(self, filename):
         if not os.path.exists(filename):
             raise NeoReceiverException("%s does not exist." % filename)
         try:
-            with codecs.open(filename, encoding='utf-8', errors='strict') as neo_file:
+            with codecs.open(filename, encoding="utf-8", errors="strict") as neo_file:
                 for n in neo_file:
                     pass
-        except UnicodeDecodeError as e:
+        except UnicodeDecodeError:
             raise NeoReceiverException("%s is NOT a valid UTF-8 file/\n" % filename)
         except Exception as e:
             raise NeoReceiverException("%s is NOT a valid UTF8-file:\n%s\n" % str(e))
@@ -188,14 +206,52 @@ def main():
     try:
         neo = NeoReceiver()
 
-        parser = argparse.ArgumentParser(description="Saves text received via an AlphaSmart Neo's 'send' function into a UTF-8 text file. Run this script, and then hit the 'send' button on the Neo.")
-        parser.add_argument("filename", action="store", nargs="?", default=neo.default_filename(), help="Optional name of the UTF-8 text file which will store the Neo text. Default = a generic name with timestamp (e.g., %s)." % neo.default_filename())
-        parser.add_argument("-e", "--echo", action="store_true", help="Echos the Neo text to the console as it's received.")
-        parser.add_argument("-m", "--mode", action="store", choices=['write', 'w', 'overwrite', 'o', 'append', 'a'], default="write", help="File-write mode: 'write' or 'w' to a new file (failing if it already exists); 'overwrite' or 'o' an existing file (creating one if it doesn't exist); 'append' or 'a' to an existing file (creating one if it doesn't exist). Default = write.")
-        parser.add_argument("-n", "--numbered", action="store_true", help="Appends a '-####' numerical suffix to the filename where the number is one larger than what's found in similiarly named files in the same directory. E.g., neotext-0001.txt, neotext-0002.txt, etc.")
-        parser.add_argument("-r", "--rawtext", action="store_true", help="By default, a newline is appended to the text if it doesn't already end with one. Use this flag to only save the raw text.")
-        parser.add_argument("-t", "--timeout", action="store", type=neo.check_timeout, default=DEFAULT_TIMEOUT, help="Number of seconds to wait for more Neo input before terminating. The timer starts after the first input is received. Default = %d seconds." % DEFAULT_TIMEOUT)
-        parser.add_argument("-w", "--whisper", action="store_true", help="Only print warning and error messages. Stay silent otherwise.")
+        parser = argparse.ArgumentParser(
+            description="Saves text received via an AlphaSmart Neo's 'send' function into a UTF-8 text file. Run this script, and then hit the 'send' button on the Neo."
+        )
+        parser.add_argument(
+            "filename",
+            action="store",
+            nargs="?",
+            default=neo.default_filename(),
+            help="Optional name of the UTF-8 text file which will store the Neo text. Default = a generic name with timestamp (e.g., %s)."
+            % neo.default_filename(),
+        )
+        parser.add_argument(
+            "-e", "--echo", action="store_true", help="Echos the Neo text to the console as it's received."
+        )
+        parser.add_argument(
+            "-m",
+            "--mode",
+            action="store",
+            choices=["write", "w", "overwrite", "o", "append", "a"],
+            default="write",
+            help="File-write mode: 'write' or 'w' to a new file (failing if it already exists); 'overwrite' or 'o' an existing file (creating one if it doesn't exist); 'append' or 'a' to an existing file (creating one if it doesn't exist). Default = write.",
+        )
+        parser.add_argument(
+            "-n",
+            "--numbered",
+            action="store_true",
+            help="Appends a '-####' numerical suffix to the filename where the number is one larger than what's found in similiarly named files in the same directory. E.g., neotext-0001.txt, neotext-0002.txt, etc.",
+        )
+        parser.add_argument(
+            "-r",
+            "--rawtext",
+            action="store_true",
+            help="By default, a newline is appended to the text if it doesn't already end with one. Use this flag to only save the raw text.",
+        )
+        parser.add_argument(
+            "-t",
+            "--timeout",
+            action="store",
+            type=neo.check_timeout,
+            default=DEFAULT_TIMEOUT,
+            help="Number of seconds to wait for more Neo input before terminating. The timer starts after the first input is received. Default = %d seconds."
+            % DEFAULT_TIMEOUT,
+        )
+        parser.add_argument(
+            "-w", "--whisper", action="store_true", help="Only print warning and error messages. Stay silent otherwise."
+        )
 
         args = parser.parse_args()
 
@@ -207,10 +263,13 @@ def main():
             filename = neo.numbered_filename(filename)
 
         if (args.mode == "write" or args.mode == "w") and os.path.exists(filename):
-            raise NeoReceiverException("%s already exists. Exiting. (If you wish to overwrite, set the mode (-m/--mode) to 'overwrite')." % filename)
-        mode = 'w'
+            raise NeoReceiverException(
+                "%s already exists. Exiting. (If you wish to overwrite, set the mode (-m/--mode) to 'overwrite')."
+                % filename
+            )
+        mode = "w"
         if args.mode == "append" or args.mode == "a":
-            mode = 'a'
+            mode = "a"
 
         neo.receive_neo_data(filename, echo=args.echo, mode=mode, raw_text=args.rawtext, timeout=args.timeout)
         neo.validate_text_file(filename)
@@ -218,7 +277,7 @@ def main():
         ret_val = 0
 
     except NeoReceiverEarlyExit as e:
-        neo.logger.warn(str(e))
+        neo.logger.warning(str(e))
         ret_val = e.error_code
 
     except NeoReceiverException as e:
@@ -234,5 +293,5 @@ def main():
         return ret_val
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())

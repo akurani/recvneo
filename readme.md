@@ -7,11 +7,11 @@ by Amar Kurani
 
 ## Introduction
 
-recvneo is a script which receives text transmitted from an AlphaSmart
-Neo via the SEND button and saves it to a UTF-8 text file. Learn more about the 
-AlphaSmart Neo: <https://en.wikipedia.org/wiki/AlphaSmart>
+recvneo is a script which receives text transmitted from an AlphaSmart Neo via
+the SEND button and saves it to a UTF-8 text file. Learn more about the
+AlphaSmart Neo: [https://en.wikipedia.org/wiki/AlphaSmart](https://en.wikipedia.org/wiki/AlphaSmart]).
 
-The SEND button transmits text from the AlphaSmart to STDIN. I.e, the AlphaSmart 
+The SEND button transmits text from the AlphaSmart to STDIN. I.e, the AlphaSmart
 "types" out the file's text to the computer.
 
 Normally, you'd use the SEND button with a text editor or word processor. This
@@ -23,15 +23,17 @@ equivalent of those distraction-free text editors like FocusWriter.
 
 ## Requirements
 
-recvneo requires Python 2.7.11+ or Python 3.5.1+ and the standard libraries.
+recvneo requires **Python 3**. The script previously supported Python 2, but
+that version is being [retired](https://pythonclock.org/).
 
 ## Installation
 
-On Mac or Linux, copy the script to somewhere in your PATH and set the executable bit:
+On Mac, copy the script to somewhere in your PATH and set the
+executable bit:
 
     chmod +x recvneo
 
-NOTE: untested on other OSs.
+Note: untested on other OSs, but this should work on Linux too.
 
 ## Usage
 
@@ -77,21 +79,34 @@ Run "recvneo --help" to learn about the command-line options:
       -w, --whisper         Only print warning and error messages. Stay silent
                             otherwise.
 
+### Terminal && International Characters
+
+Use a terminal with UTF-8 encoding. Otherwise, the script will probably fail
+when trying to read international characters that the Neo can write like:
+
+```ÁÀÄÃáàâäãåæÆçÇÈÊËéèêëÑñÓÒÔÖÕóòôöõÚÙÛÜúùûüÿ™®©øØ˚∞§¶¿¡¿¡»«´`^¨~˙1/21/31/4÷±ƒ$¢£€¥€ß∑∏µ```
+
+See the [AlphaSmart Neo Manual](https://www.manualslib.com/manual/354048/Alphasmart-Neo.html?page=145#manual).
+
 ## Tested
 
-Tested on the following:
+Tested on the following platforms:
 
-OS X:
-* OS X 10.11.3
-* Python 2.7.11 (Homebrew)
-* Python 3.5.1 (Homebrew)
+### macOS & Python 3
 
-Linux:
-* Ubuntu 15.10
-* TODO: Python 2 (Ubuntu)
-* Python 3.4.3+ (apt-get)
+* macOS Mojave v10.14.4
+* Terminal 2.9.4 (built-in) with UTF-8 encoding
+* Python 3.7.3 ([Homebrew](https://brew.sh/) or [pyenv](https://github.com/pyenv/pyenv))
 
-NOTE: untested on other OSs.
+## Development
+
+Uses [Flake8](http://flake8.pycqa.org/en/latest/) for linting. See the
+```.flake8``` config file.
+
+Uses [Black](https://black.readthedocs.io/en/stable/index.html) for code
+formatting. See ```[tool.black]``` in ```pyproject.toml```
+
+Both are assumed to be globally installed on the developer machine.
 
 ## Licensed under GPL v3
 
